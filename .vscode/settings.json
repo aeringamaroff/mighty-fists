@@ -1,0 +1,7 @@
+{
+	"chat.agent.enabled": false,
+	"chat.setupFromDialog": false,
+	"chat.focusWindowOnConfirmation": false,
+	"chat.extensionTools.enabled": false,
+	"chat.commandCenter.enabled": false
+}
