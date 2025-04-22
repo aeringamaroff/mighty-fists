@@ -1,13 +1,18 @@
+import { error, json } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ parent }) => {
-	const parentData = await parent();
+export const load: PageServerLoad = async ({ fetch }) => {
+	// unlike a normal js fetch(), this one only needs the relative path instead of a full url
+	// this is an internal request (going from our server to our server)
+	const response = await fetch('api/products');
 
-	console.log('Parent Data', parentData);
+	if (response.ok) {
+		return {
+			products: await response.json()
+		};
+	}
 
-	const products = (await import('$lib/dummy-products.json')).default;
+	const errJson = await response.json();
 
-	return {
-		products
-	};
+	throw error(response.status, errJson);
 };

@@ -1,21 +1,17 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 
-export const load: PageServerLoad = async ({ params }) => {
-	console.log('Product server load function', params);
+export const load: PageServerLoad = async ({ params, fetch }) => {
+	const productRes = await fetch(`https://dummyjson.com/products/${params.id}`);
 
-	const products = (await import('$lib/dummy-products.json')).products;
-
-	const product = products.find((product) => product.id === +params.id);
-
-	console.log('product Data', product);
-
-	if (!product) {
-		// can redirect to the url:
+	if (!productRes.ok) {
+		// can redirect to a provided url:
 		// throw redirect(301, '/products');
 
-		throw error(404, 'Product Not Found');
+		throw error(productRes.status, 'Product Not Found');
 	}
+
+	const product = await productRes.json();
 
 	return {
 		product,
