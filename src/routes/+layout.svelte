@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { LayoutData } from './$types';
 	import { page } from '$app/state';
+	import { invalidateAll } from '$app/navigation';
 
 	export let data: LayoutData;
 </script>
@@ -33,8 +34,12 @@
 		<p>Welcome, {data?.user.name}!</p>
 		<button
 			style="width: 10%"
-			on:click={() => {
-				fetch('api/logout', { method: 'POST' });
+			on:click={async () => {
+				const response = await fetch('api/logout', { method: 'POST' });
+
+				if (response.ok) {
+					invalidateAll();
+				}
 			}}
 		>
 			Logout

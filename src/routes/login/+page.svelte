@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 
 	let username = '';
 	let password = '';
@@ -13,8 +13,9 @@
 		const resJson = await res.json();
 
 		if (res.ok) {
-			console.log('login response', resJson);
-			goto('/');
+			// by rerunning the load function in login/+page.ts we will be redirected because a user object exists
+
+			invalidateAll();
 		} else {
 			alert(resJson.message);
 		}
