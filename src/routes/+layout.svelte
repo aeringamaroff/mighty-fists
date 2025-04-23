@@ -3,8 +3,6 @@
 	import { page } from '$app/state';
 
 	export let data: LayoutData;
-
-	console.log('page', page.data);
 </script>
 
 <svelte:head>
@@ -25,19 +23,34 @@
 	<nav>
 		<a href="/">Home</a>
 		<a href="/products">Products</a>
+
+		{#if !data.user}
+			<a href="/login">Login</a>
+		{/if}
 	</nav>
 
 	{#if data.user}
 		<p>Welcome, {data?.user.name}!</p>
+		<button
+			style="width: 10%"
+			on:click={() => {
+				fetch('api/logout', { method: 'POST' });
+			}}
+		>
+			Logout
+		</button>
 	{/if}
 
 	<slot />
 
 	<footer
 		style="
-    background: #f1f1f1;
-    padding: 10px;
-    text-align: center;
+		position:absolute;
+		width:100%;
+		bottom:0px;
+		background: #f1f1f1;
+		padding: 10px;
+		text-align: center;
   "
 	>
 		All rights reserved
