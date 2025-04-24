@@ -4,6 +4,10 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [sveltekit()],
+	// * uncomment to allow access from another device
+	// server: {
+	// 	host: '192.168.0.102'
+	// },
 	test: {
 		workspace: [
 			{

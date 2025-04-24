@@ -1,10 +1,10 @@
 import { json, error } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
-export const GET: RequestHandler = async ({ fetch }) => {
+export const GET: RequestHandler = async ({ fetch, locals }) => {
 	const response = await fetch('https://dummyjson.com/products');
 
-	console.log(response);
+	console.log(locals);
 
 	if (response.ok) {
 		const resJson = await response.json();
@@ -17,8 +17,6 @@ export const GET: RequestHandler = async ({ fetch }) => {
 
 export const POST: RequestHandler = async ({ request }) => {
 	const product = await request.json();
-
-	console.log('POST: ', product);
 
 	if (!product.title) {
 		throw error(400, 'Product Title is Required');
