@@ -1,5 +1,7 @@
 <script lang="ts">
+	import { enhance } from '$app/forms';
 	import { goto, invalidateAll } from '$app/navigation';
+	import type { ActionData } from './$types';
 
 	let username = '';
 	let password = '';
@@ -20,16 +22,29 @@
 			alert(resJson.message);
 		}
 	};
+
+	export let form: ActionData;
+
+	$: console.log(form);
 </script>
 
-<form on:submit|preventDefault={login}>
+<!-- * another way to login: <form on:submit|preventDefault={login}> -->
+<!-- ! NOTE: using the login function wont work if javascript is disabled -->
+<!-- if the login function is not used, the bind:value={} can be removed from the form inputs -->
+
+<!-- ? ?/login is needed so we can use the named form action instead of the default -->
+<form method="POST" action="?/login" use:enhance>
 	<hr />
+
+	{#if form?.informationMissing}
+		<p style="color: red">Missing username or password!</p>
+	{/if}
 
 	<label for="username">Username</label>
 
 	<br />
 
-	<input bind:value={username} type="text" id="username" name="username" placeholder="Username" />
+	<input type="text" id="username" name="username" placeholder="Username" />
 
 	<br />
 
@@ -37,13 +52,7 @@
 
 	<br />
 
-	<input
-		bind:value={password}
-		type="password"
-		id="password"
-		name="password"
-		placeholder="Password"
-	/>
+	<input type="password" id="password" name="password" placeholder="Password" />
 
 	<br />
 

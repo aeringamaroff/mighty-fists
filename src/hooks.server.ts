@@ -2,8 +2,6 @@ import type { Handle, HandleFetch, HandleServerError } from '@sveltejs/kit';
 import { sequence } from '@sveltejs/kit/hooks';
 
 export const handle1: Handle = async ({ event, resolve }) => {
-	console.log(event.url.pathname, event.isDataRequest);
-
 	const { cookies, locals, url } = event;
 
 	if (!url.pathname.startsWith('/api')) {
