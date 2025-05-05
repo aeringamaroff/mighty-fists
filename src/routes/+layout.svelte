@@ -5,17 +5,29 @@
 	import 'modern-normalize/modern-normalize.css';
 
 	import type { LayoutData } from './$types';
-	import LogoutButton from '$components/LogoutButton.svelte';
 
 	export let data: LayoutData;
 
 	$: user = data.user;
 </script>
 
-{#if user}
-	<p>Hello, {user.display_name}</p>
+<div id="main">
+	<div id="content">
+		<main id="main-content">
+			<slot />
+		</main>
+	</div>
+</div>
 
-	<LogoutButton />
-{/if}
-
-<slot />
+<style lang="scss">
+	#main {
+		#content {
+			main#main-content {
+				padding: 30px 15px 60px;
+				@include breakpoint.up('md') {
+					padding: 30px 30px 60px;
+				}
+			}
+		}
+	}
+</style>
