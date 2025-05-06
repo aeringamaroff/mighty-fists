@@ -58,11 +58,6 @@
 				align-items: center;
 				width: 100%;
 				z-index: 100;
-				@include breakpoint.up('md') {
-					padding: 0 30px;
-					width: calc(100% - var(--sidebar-width));
-				}
-
 				.topbar-bg {
 					position: absolute;
 					width: 100%;
@@ -71,15 +66,18 @@
 					left: 0;
 					z-index: -1;
 				}
+				@include breakpoint.up('md') {
+					padding: 0 30px;
+					width: calc(100% - var(--sidebar-width));
+				}
 			}
 			main#main-content {
 				padding: 30px 15px 60px;
-
 				@include breakpoint.up('md') {
 					padding: 30px 30px 60px;
 				}
 				&.logged-in {
-					padding-top: calc(30px + var(--header-height)) !important;
+					padding-top: calc(30px + var(--header-height));
 				}
 			}
 		}

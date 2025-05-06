@@ -4,8 +4,13 @@
 
 	import logo from '$assets/Spotify_Logo_RGB_White.png';
 	import { page } from '$app/state';
+	import { fade } from 'svelte/transition';
 
 	export let desktop: boolean;
+
+	let isMobileMenuOpen = false;
+
+	$: isOpen = desktop || isMobileMenuOpen;
 
 	const menuItems: { path: string; label: string; icon: ComponentType<Icon> }[] = [
 		{
@@ -24,11 +29,42 @@
 			icon: ListMusic
 		}
 	];
+
+	const openMenu = () => {
+		isMobileMenuOpen = true;
+	};
+
+	const closeMenu = () => {
+		isMobileMenuOpen = false;
+	};
 </script>
 
+<svelte:head>
+	{#if !desktop && isMobileMenuOpen}
+		<style>
+			body {
+				overflow: hidden;
+			}
+		</style>
+	{/if}
+</svelte:head>
+
 <div class="nav-content" class:desktop class:mobile={!desktop}>
+	{#if !desktop && isMobileMenuOpen}
+		<div class="overlay" on:click={closeMenu} transition:fade={{ duration: 200 }}></div>
+	{/if}
 	<nav aria-label="Main">
-		<div class="nav-content-inner">
+		{#if !desktop}
+			<button on:click={openMenu}>Open</button>
+		{/if}
+		<div
+			class="nav-content-inner"
+			class:is-hidden={!isOpen}
+			style:visibility={isOpen ? 'visible' : 'hidden'}
+		>
+			{#if !desktop}
+				<button on:click={closeMenu}>Close</button>
+			{/if}
 			<img src={logo} class="logo" alt="logo" />
 			<ul>
 				{#each menuItems as item}
@@ -51,12 +87,25 @@
 
 <style lang="scss">
 	.nav-content {
+		.overlay {
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			background-color: var(--sidebar-color);
+			opacity: 0.75;
+			z-index: 100;
+			@include breakpoint.up('md') {
+				display: none;
+			}
+		}
 		.logo {
 			max-width: 100%;
 			width: 130px;
 		}
 		.nav-content-inner {
-			padding: 90px;
+			padding: 20px;
 			min-width: var(--sidebar-width);
 			background-color: var(--sidebar-color);
 			height: 100vh;
@@ -76,7 +125,7 @@
 						display: flex;
 						align-items: center;
 						text-decoration: none;
-						color: var(---text-color);
+						color: var(--text-color);
 						font-size: functions.toRem(14);
 						font-weight: 500;
 						padding: 5px;
@@ -86,6 +135,9 @@
 						&:hover,
 						&:focus {
 							opacity: 1;
+						}
+						:global(svg) {
+							margin-right: 12px;
 						}
 					}
 				}
@@ -98,6 +150,22 @@
 				@include breakpoint.up('md') {
 					display: block;
 				}
+			}
+		}
+		&.mobile .nav-content-inner {
+			position: fixed;
+			top: 0;
+			left: 0;
+			z-index: 100;
+			transition:
+				transform 200ms,
+				opacity 200ms;
+			&.is-hidden {
+				transform: translateX(-100%);
+				opacity: 0;
+			}
+			@include breakpoint.down('md') {
+				display: block;
 			}
 		}
 	}
