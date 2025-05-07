@@ -1,10 +1,11 @@
 <script lang="ts">
 	import type { ComponentType } from 'svelte';
-	import { Home, Search, ListMusic, type Icon } from 'lucide-svelte';
-
+	import { Home, Search, ListMusic, type Icon, Menu, X } from 'lucide-svelte';
+	import IconButton from '$components/IconButton.svelte';
 	import logo from '$assets/Spotify_Logo_RGB_White.png';
 	import { page } from '$app/state';
 	import { fade } from 'svelte/transition';
+	import { beforeNavigate } from '$app/navigation';
 
 	export let desktop: boolean;
 
@@ -37,6 +38,10 @@
 	const closeMenu = () => {
 		isMobileMenuOpen = false;
 	};
+
+	beforeNavigate(() => {
+		isMobileMenuOpen = false;
+	});
 </script>
 
 <svelte:head>
@@ -51,11 +56,25 @@
 
 <div class="nav-content" class:desktop class:mobile={!desktop}>
 	{#if !desktop && isMobileMenuOpen}
-		<div class="overlay" on:click={closeMenu} transition:fade={{ duration: 200 }}></div>
+		<div
+			class="overlay"
+			on:click={closeMenu}
+			on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && closeMenu()}
+			tabindex="0"
+			role="button"
+			aria-label="Close menu"
+			transition:fade={{ duration: 200 }}
+		></div>
 	{/if}
 	<nav aria-label="Main">
 		{#if !desktop}
-			<button on:click={openMenu}>Open</button>
+			<IconButton
+				icon={Menu}
+				label="Open Menu"
+				on:click={openMenu}
+				aria-expanded={isOpen}
+				class="menu-button"
+			/>
 		{/if}
 		<div
 			class="nav-content-inner"
@@ -63,7 +82,13 @@
 			style:visibility={isOpen ? 'visible' : 'hidden'}
 		>
 			{#if !desktop}
-				<button on:click={closeMenu}>Close</button>
+				<IconButton
+					icon={X}
+					label="Close Menu"
+					on:click={closeMenu}
+					aria-expanded={isOpen}
+					class="close-menu-button"
+				/>
 			{/if}
 			<img src={logo} class="logo" alt="logo" />
 			<ul>
@@ -158,8 +183,8 @@
 			left: 0;
 			z-index: 100;
 			transition:
-				transform 200ms,
-				opacity 200ms;
+				transform 0.2s,
+				opacity 0.2s;
 			&.is-hidden {
 				transform: translateX(-100%);
 				opacity: 0;
@@ -167,6 +192,16 @@
 			@include breakpoint.down('md') {
 				display: block;
 			}
+		}
+		:global(.menu-button) {
+			@include breakpoint.up('md') {
+				display: none;
+			}
+		}
+		:global(.close-menu-button) {
+			position: absolute;
+			right: 20px;
+			top: 20px;
 		}
 	}
 </style>

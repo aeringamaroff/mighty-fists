@@ -1,4 +1,5 @@
 @use 'functions';
+@import 'tippy-theme';
 
 :root {
 	--bg-color: #191414;
@@ -79,4 +80,14 @@ a {
 		outline: 2px solid var(--accent-color);
 		outline-offset: 2px;
 	}
+}
+
+.visually-hidden {
+	clip: rect(0 0 0 0);
+	clip-path: inset(100%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
 }
