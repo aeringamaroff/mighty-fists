@@ -3,10 +3,17 @@
 
 	// ? this ensurees styles are consistent across all browsers
 	import 'modern-normalize/modern-normalize.css';
-
+	import 'nprogress/nprogress.css';
+	import NProgress from 'nprogress';
 	import type { LayoutData } from './$types';
+	import { page } from '$app/state';
 	import { Navigation } from '$components';
 	import Header from '$components/Header.svelte';
+	import { afterNavigate, beforeNavigate } from '$app/navigation';
+
+	NProgress.configure({
+		showSpinner: false
+	});
 
 	export let data: LayoutData;
 
@@ -20,9 +27,21 @@
 	}
 
 	$: user = data.user;
+
+	beforeNavigate(() => {
+		NProgress.start();
+	});
+
+	afterNavigate(() => {
+		NProgress.done();
+	});
 </script>
 
 <svelte:window bind:scrollY />
+
+<svelte:head>
+	<title>Svelte Spotify {page.data.title ? ` - ${page.data.title}` : ''}</title>
+</svelte:head>
 
 <div id="main">
 	{#if user}
